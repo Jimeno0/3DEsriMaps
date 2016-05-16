@@ -63,6 +63,7 @@
         var query = new Query();
         query.returnGeometry = true;
         query.outFields = ["*"];
+        query.outSpatialReference = {wkid: 102100};
         query.where = "1=1";  // Return all cities with a population greater than 1 million
 
         // When resolved, returns features and graphics that satisfy the query.
@@ -71,22 +72,23 @@
           console.log(results.features);
           var features = results.features;
 
-          var symbol = new SimpleFillSymbol({
-            color: [ 51,51, 204, 0.9 ],
-            style: "solid",
-            outline: {  // autocasts as esri/symbols/SimpleLineSymbol
-              color: "white",
-              width: 1
-            }
-          });
+          // var symbol = new SimpleFillSymbol({
+          //   color: [ 51,51, 204, 0.9 ],
+          //   style: "solid",
+          //   outline: {  // autocasts as esri/symbols/SimpleLineSymbol
+          //     color: "white",
+          //     width: 1
+          //   }
+          // });
 
           for (var i = 0; i < features.length; i++) {
-            // var symbol = new PolygonSymbol3D({
-            //   symbolLayers: [new ExtrudeSymbol3DLayer({
-            //     size: 1000,   // Height of the extrusion in meters
-            //     material: { color: "blue" }
-            //   })]
-            // });
+            var size = (features[i].attributes.POP2000)/40;
+            var symbol = new PolygonSymbol3D({
+              symbolLayers: [new ExtrudeSymbol3DLayer({
+                size: size,   // Height of the extrusion in meters
+                material: { color: "blue" }
+              })]
+            });
 
             features[i].symbol = symbol;
 
