@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+      <title>Get started with SceneView - Create a 3D map</title>
+      <style>
+        html, body, #viewDiv {
+          padding: 0;
+          margin: 0;
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+      <link rel="stylesheet" href="https://js.arcgis.com/4.0/esri/css/main.css">
+      <script src="https://js.arcgis.com/4.0/"></script>
+      <script>
+      require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/MapImageLayer",
+        'esri/tasks/support/Query',
+        "esri/symbols/PolygonSymbol3D",
+        "esri/symbols/ExtrudeSymbol3DLayer",
+        "esri/tasks/QueryTask",
+        "esri/layers/GraphicsLayer",
+        "dojo/domReady!"
+      ], function(Map, SceneView,MapImageLayer,Query,PolygonSymbol3D,ExtrudeSymbol3DLayer,QueryTask,GraphicsLayer){
+        var map = new Map({
+          basemap: "oceans", //Additional basemap options are: satellite, hybrid, topo, gray, dark-gray, oceans, osm, national-geographic.
+          ground: "world-elevation"
+        });
+        var view = new SceneView({
+          container: "viewDiv",     // Reference to the scene div created in step 5
+          map: map,                 // Reference to the map object created before the scene
+          //Setting the view point in the camera properties 
+          camera: {
+          position: [
+                 -100, // lon
+                   20, // lat
+                5000000  // elevation in meters
+              ],
+              tilt: 20,
+              heading: 10
+            },
+
+          environment:{
+            lighting: {
+              directShadowsEnabled: true,
+              date: new Date("Sun Mar 15 2015 16:00:00 GMT+0100 (CET)")
+            }
+          }
+        });
+
+        var graphicsLayer = new GraphicsLayer();
+        map.add(graphicsLayer);
+
+        var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3'; // Represents the REST endpoint for a layer of cities.
+        var queryTask = new QueryTask({
+          url: usaStatesUrl
+        });
+        var query = new Query();
+        query.returnGeometry = true;
+        query.outFields = ["*"];
+        query.where = "1=1";  // Return all cities with a population greater than 1 million
+
+        // When resolved, returns features and graphics that satisfy the query.
+        queryTask.execute(query).then(function(results){
+          debugger
+          console.log(results.features);
+          var features = results.features;
+
+          for (var i = 0; i < features.length; i++) {
+            var symbol = new PolygonSymbol3D({
+              symbolLayers: [new ExtrudeSymbol3DLayer({
+                size: 1000,   // Height of the extrusion in meters
+                material: { color: "blue" }
+              })]
+            });
+
+            features[i].symbol = symbol;
+
+            graphicsLayer.add(features[i]);
+          };
+        });
+
+        // When resolved, returns a count of the features that satisfy the query.
+        queryTask.executeForCount(query).then(function(results){
+          debugger
+          console.log(results);
+        });
+        
+      });
+      </script>
+    </head>
+    <body>
+      <div id="viewDiv"></div>
+    </body>
+  </html>
