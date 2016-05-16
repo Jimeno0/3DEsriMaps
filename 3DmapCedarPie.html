@@ -24,9 +24,10 @@
         "esri/symbols/ExtrudeSymbol3DLayer",
         "esri/tasks/QueryTask",
         "esri/layers/GraphicsLayer",
+        "esri/symbols/SimpleFillSymbol",
         "dojo/domReady!"
-      ], function(Map, SceneView,MapImageLayer,Query,PolygonSymbol3D,ExtrudeSymbol3DLayer,QueryTask,GraphicsLayer){
-        var map = new Map({
+      ], function(Map, SceneView,MapImageLayer,Query,PolygonSymbol3D,ExtrudeSymbol3DLayer,QueryTask,GraphicsLayer,SimpleFillSymbol){
+        map = new Map({
           basemap: "oceans", //Additional basemap options are: satellite, hybrid, topo, gray, dark-gray, oceans, osm, national-geographic.
           ground: "world-elevation"
         });
@@ -70,13 +71,22 @@
           console.log(results.features);
           var features = results.features;
 
+          var symbol = new SimpleFillSymbol({
+            color: [ 51,51, 204, 0.9 ],
+            style: "solid",
+            outline: {  // autocasts as esri/symbols/SimpleLineSymbol
+              color: "white",
+              width: 1
+            }
+          });
+
           for (var i = 0; i < features.length; i++) {
-            var symbol = new PolygonSymbol3D({
-              symbolLayers: [new ExtrudeSymbol3DLayer({
-                size: 1000,   // Height of the extrusion in meters
-                material: { color: "blue" }
-              })]
-            });
+            // var symbol = new PolygonSymbol3D({
+            //   symbolLayers: [new ExtrudeSymbol3DLayer({
+            //     size: 1000,   // Height of the extrusion in meters
+            //     material: { color: "blue" }
+            //   })]
+            // });
 
             features[i].symbol = symbol;
 
@@ -86,10 +96,10 @@
 
         // When resolved, returns a count of the features that satisfy the query.
         queryTask.executeForCount(query).then(function(results){
-          debugger
+
           console.log(results);
         });
-        
+        console.log(map);
       });
       </script>
     </head>
