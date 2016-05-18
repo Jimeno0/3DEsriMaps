@@ -69,44 +69,58 @@
 
         var graphicsLayer = new GraphicsLayer();
         map.add(graphicsLayer);
+        var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
+        applySimbologyWindow = applySimbology;
+        function applySimbology (highlighted){
+          graphicsLayer.removeAll();
+          var queryTask = new QueryTask({
+            url: usaStatesUrl
+          });
+          var query = new Query();
+          query.returnGeometry = true;
+          query.outFields = ["POP2000","STATE_NAME"];
+          query.outSpatialReference = {wkid: 102100};
+          query.where = "1=1";
+          queryTask.execute(query).then(function(results){
+            var features = results.features;
 
-        var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3'; // Represents the REST endpoint for a layer of cities.
-        var queryTask = new QueryTask({
-          url: usaStatesUrl
-        });
-        var query = new Query();
-        query.returnGeometry = true;
-        //Todos los campos por si hacía distinciones por razas, sino solo pop200¿?
-        query.outFields = ["*"];
-        query.outSpatialReference = {wkid: 102100};
-        query.where = "1=1";  // Return all cities with a population greater than 1 million
+             //var highlighted = "Texas"
 
-        // When resolved, returns features and graphics that satisfy the query.
-        queryTask.execute(query).then(function(results){
-          var features = results.features;
-
-          for (var i = 0; i < features.length; i++) {
+            for (var i = 0; i < features.length; i++) {
             var size = (features[i].attributes.POP2000)/40;
-            var symbol = new PolygonSymbol3D({
-              symbolLayers: [new ExtrudeSymbol3DLayer({
-                size: size,   // Height of the extrusion in meters
-                material: { color: "blue" }
-              })]
-            });
 
-            features[i].symbol = symbol;
+              if (features[i].attributes.STATE_NAME == highlighted) {
+                  var symbol = new PolygonSymbol3D({
+                  symbolLayers: [new ExtrudeSymbol3DLayer({
+                    size: size,   // Height of the extrusion in meters
+                    material: { color: "rgb(0, 182, 234)" }
+                  })]
+                });
 
-            graphicsLayer.add(features[i]);
-          };
-        });
+              }else {
+                var symbol = new PolygonSymbol3D({
+                  symbolLayers: [new ExtrudeSymbol3DLayer({
+                    size: size,   // Height of the extrusion in meters
+                    material: { color: "blue" }
+                  })]
+                });
+              };
 
-        // When resolved, returns a count of the features that satisfy the query.
-        queryTask.executeForCount(query).then(function(results){
+              features[i].symbol = symbol;
 
-        });
+              graphicsLayer.add(features[i]);
+            };
+          });
 
+          // When resolved, returns a count of the features that satisfy the query.
+          queryTask.executeForCount(query).then(function(results){
 
-      });
+          });
+
+      };
+
+      applySimbology("null");
+
       var serviceUrl = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3",
         xField = "STATE_NAME",
         yField = "POP2000",
@@ -134,10 +148,24 @@
           elementId: "#cedarDiv",
           autolabels: true
         });
+
+        function clickBar(event,data){
+          debugger
+        var selected = data[chart.dataset.mappings.x.field];
+        applySimbology(selected);
+        }
+        chart.on('click', clickBar);
+
+
+      });
+      
+
       </script>
     </head>
     <body>
       <div id="viewDiv"></div>
-      <div id="cedarDiv"></div>
+      <div id="cedarDiv">
+        <a href="#" onclick="applySimbologyWindow('null'); return false">Reset Chart</a>&nbsp;<span id="filter">Click on bars to highlight selected in map</span>
+      </div>
     </body>
   </html>
