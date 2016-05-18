@@ -3,7 +3,7 @@
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-      <title>Get started with SceneView - Create a 3D map</title>
+      <title>3D Map and Cedar example</title>
       <style>
         html, body, #viewDiv {
           padding: 0;
@@ -66,12 +66,24 @@
             }
           }
         });
+        var template = { // autocasts as new PopupTemplate()
+          title: "{STATE_NAME}",
+          content: "Population: {POP2000}",
+        };
 
-        var graphicsLayer = new GraphicsLayer();
+        var graphicsLayer = new GraphicsLayer({popupTemplate: template});
         map.add(graphicsLayer);
         var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
         applySimbologyWindow = applySimbology;
         function applySimbology (highlighted){
+
+          // var PopupTemplate = new PopupTemplate();
+          // popupTemplate.title = "{STATE_NAME}";
+          // popupTemplate.content = "{POP2000}";
+
+
+
+
           graphicsLayer.removeAll();
           var queryTask = new QueryTask({
             url: usaStatesUrl
@@ -88,6 +100,7 @@
             var size = (features[i].attributes.POP2000)/40;
 
               if (features[i].attributes.STATE_NAME == highlighted) {
+                debugger
                 view.goTo(features[i].geometry)
                   var symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
