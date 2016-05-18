@@ -3,7 +3,6 @@
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-      <meta name="author" content="Carlos Pérez Jimeno">
       <title>3D Map and Cedar example</title>
       <style>
         html, body, #viewDiv {
@@ -17,7 +16,7 @@
           top: 10px;
           /*left: 16px;*/
           z-index: 1;
-          background-color: rgba(255,255,255,.5);
+          background-color: rgba(255,255,255,.8);
           right: 10px;
           /*padding: 40px;*/
         }
@@ -52,14 +51,13 @@
           //Setting the view point in the camera properties 
           camera: {
           position: [
-                 -90, // lon
+                 -100, // lon
                    20, // lat
-                10000000  // elevation in meters
+                5000000  // elevation in meters
               ],
-              tilt: 10,
+              tilt: 20,
               heading: 10
             },
-
           environment:{
             lighting: {
               directShadowsEnabled: true,
@@ -71,13 +69,14 @@
           title: "{STATE_NAME}",
           content: "Population: {POP2000}",
         };
-
         var graphicsLayer = new GraphicsLayer({popupTemplate: template});
         map.add(graphicsLayer);
         var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
         applySimbologyWindow = applySimbology;
         function applySimbology (highlighted){
-
+          // var PopupTemplate = new PopupTemplate();
+          // popupTemplate.title = "{STATE_NAME}";
+          // popupTemplate.content = "{POP2000}";
           graphicsLayer.removeAll();
           var queryTask = new QueryTask({
             url: usaStatesUrl
@@ -89,10 +88,8 @@
           query.where = "1=1";
           queryTask.execute(query).then(function(results){
             var features = results.features;
-
             for (var i = 0; i < features.length; i++) {
             var size = (features[i].attributes.POP2000)/40;
-
               if (features[i].attributes.STATE_NAME == highlighted) {
                 debugger
                 view.goTo(features[i].geometry)
@@ -102,7 +99,6 @@
                     material: { color: "rgb(0, 182, 234)" }
                   })]
                 });
-
               }else {
                 var symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
@@ -111,57 +107,46 @@
                   })]
                 });
               };
-
               features[i].symbol = symbol;
-
               graphicsLayer.add(features[i]);
             };
           });
           queryTask.executeForCount(query).then(function(results){
-
           });
-
       };
-
       applySimbology("null");
-
       var xField = "STATE_NAME",
         yField = "POP2000",
         toolTipTitle1 = "{POP2000}",
         toolTipTitle2 = "{STATE_NAME}";
-
       var chart = new Cedar({
-        "type": "pie",
-
+        "type": "bar",
         "dataset": {
           "url":usaStatesUrl,
           "mappings":{
-          "label": {"field":xField,"label":"States"},
-          "y": {"field":yField,"label":"Population"},
-           "sort": yField,
-          "radius": 270
+            "x": {"field":xField,"label":"States"},
+            "y": {"field":yField,"label":"Population"},
+            "sort": yField + " DESC"  
           }
+        },
+        "tooltip": {
+          "id": "tooltip-url",
+          "title": toolTipTitle2,
+          "content": "Population: " + toolTipTitle1 
         }
       });
-      chart.tooltip = {
-        "title": toolTipTitle2,
-        "content": "Population: " + toolTipTitle1
-      }
         chart.show({
           elementId: "#cedarDiv",
-          width: 550,
-          height: 550,
           autolabels: true
         });
-
-
         function clickBar(event,data){
           debugger
-          var selected = data[chart.dataset.mappings.label.field];
-          applySimbology(selected);
+        var selected = data[chart.dataset.mappings.x.field];
+        applySimbology(selected);
         }
         chart.on('click', clickBar);
       });
+      
       </script>
     </head>
     <body>
