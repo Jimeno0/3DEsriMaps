@@ -90,6 +90,7 @@
             var size = (features[i].attributes.POP2000)/40;
 
               if (features[i].attributes.STATE_NAME == highlighted) {
+                view.goTo(features[i].geometry)
                   var symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
                     size: size,   // Height of the extrusion in meters
@@ -165,7 +166,7 @@
     <body>
       <div id="viewDiv"></div>
       <div id="cedarDiv">
-        <a href="#" onclick="applySimbologyWindow('null'); return false">Reset simbology</a>&nbsp;<span id="filter">Click on bars to highlight selected in map</span>
+        <a href="#" onclick="applySimbologyWindow('null'); return false"> Reset simbology</a><span id="filter">Click on bars to highlight selected in map</span>
       </div>
     </body>
   </html>
