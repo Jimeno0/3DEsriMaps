@@ -15,11 +15,10 @@
         #cedarDiv{
           position: absolute;
           top: 10px;
-          /*left: 16px;*/
           z-index: 1;
           background-color: rgba(255,255,255,.5);
           right: 10px;
-          /*padding: 40px;*/
+          padding: 20px;
         }
       </style>
       <script type="text/javascript" src="//esri.github.io/cedar/js/d3.min.js"></script>
@@ -94,7 +93,6 @@
             var size = (features[i].attributes.POP2000)/40;
 
               if (features[i].attributes.STATE_NAME == highlighted) {
-                debugger
                 view.goTo(features[i].geometry)
                   var symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
@@ -156,7 +154,6 @@
 
 
         function clickBar(event,data){
-          debugger
           var selected = data[chart.dataset.mappings.label.field];
           applySimbology(selected);
         }
@@ -167,7 +164,7 @@
     <body>
       <div id="viewDiv"></div>
       <div id="cedarDiv">
-        <a href="#" onclick="applySimbologyWindow('null'); return false"> Reset simbology</a><span id="filter">Click on bars to highlight selected in map</span>
+        <a href="#" onclick="applySimbologyWindow('null'); return false"> Reset simbology</a><span id="filter"> Click on bars to highlight selected in map</span>
       </div>
     </body>
   </html>
