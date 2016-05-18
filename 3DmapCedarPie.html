@@ -84,8 +84,6 @@
           queryTask.execute(query).then(function(results){
             var features = results.features;
 
-             //var highlighted = "Texas"
-
             for (var i = 0; i < features.length; i++) {
             var size = (features[i].attributes.POP2000)/40;
 
@@ -93,7 +91,7 @@
                 view.goTo(features[i].geometry)
                   var symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
-                    size: size,   // Height of the extrusion in meters
+                    size: size,
                     material: { color: "rgb(0, 182, 234)" }
                   })]
                 });
@@ -101,7 +99,7 @@
               }else {
                 var symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
-                    size: size,   // Height of the extrusion in meters
+                    size: size,
                     material: { color: "blue" }
                   })]
                 });
@@ -112,8 +110,6 @@
               graphicsLayer.add(features[i]);
             };
           });
-
-          // When resolved, returns a count of the features that satisfy the query.
           queryTask.executeForCount(query).then(function(results){
 
           });
@@ -122,8 +118,7 @@
 
       applySimbology("null");
 
-      var serviceUrl = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3",
-        xField = "STATE_NAME",
+      var xField = "STATE_NAME",
         yField = "POP2000",
         toolTipTitle1 = "{POP2000}",
         toolTipTitle2 = "{STATE_NAME}";
@@ -131,7 +126,7 @@
         "type": "bar",
 
         "dataset": {
-          "url":serviceUrl,
+          "url":usaStatesUrl,
 
           "mappings":{
             "x": {"field":xField,"label":"States"},
