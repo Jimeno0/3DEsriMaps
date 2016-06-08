@@ -38,8 +38,9 @@
         "esri/tasks/QueryTask",
         "esri/layers/GraphicsLayer",
         "esri/symbols/SimpleFillSymbol",
+        "esri/widgets/Home",
         "dojo/domReady!"
-      ], function(Map, SceneView,MapImageLayer,Query,PolygonSymbol3D,ExtrudeSymbol3DLayer,QueryTask,GraphicsLayer,SimpleFillSymbol){
+      ], function(Map, SceneView,MapImageLayer,Query,PolygonSymbol3D,ExtrudeSymbol3DLayer,QueryTask,GraphicsLayer,SimpleFillSymbol,Home){
         map = new Map({
           basemap: "oceans", //Additional basemap options are: satellite, hybrid, topo, gray, dark-gray, oceans, osm, national-geographic.
           ground: "world-elevation"
@@ -64,6 +65,12 @@
             }
           }
         });
+        var homeWidget = new Home({
+          view: view
+        });
+
+        // adds the home widget to the top left corner of the MapView
+        view.ui.add(homeWidget, "top-left");
         var template = {
           title: "{STATE_NAME}",
           content: "Population: {POP2000}",
