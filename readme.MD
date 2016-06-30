@@ -8,11 +8,11 @@ There are two examples of 3D maps where we can see the USA population represente
 
 ## How this Cedar example works
 
-I learn how to do it form the [Esri Cedar tutorial](http://esri.github.io/cedar/tutorial/). There are many simple exameples if you want to learn how to start with cedar.
+I learn how to do it form the [Esri Cedar tutorial](http://esri.github.io/cedar/tutorial/). There are many simple examples if you want to learn how to start with Cedar.
 
-### CDNs
+### Adding the libraries
 
-Fist we add the CDNs
+First we add the libraries
 
 ```html
 <script type="text/javascript" src="//esri.github.io/cedar/js/d3.min.js"></script>
@@ -22,9 +22,9 @@ Fist we add the CDNs
 ### Chart
 
 We create the Cedar Chart by using `new Cedar`constructor.
-I define a couple of variables because of we can use the same graphics scaffold to many others services by just changing this variables. These veariables are:
+I define a couple of variables to be able to use the same graphics scaffold to many others services by just changing this variables. These veariables are:
 
-* Service url: Feature/Map service url 
+* Service url: Feature/Map service url
 * Fields to display:
 	What field we want to display on each axe. In case we use Pie Graphics instead of use x field we will have a propertie Label 
 	* y field
@@ -36,9 +36,9 @@ I define a couple of variables because of we can use the same graphics scaffold 
 var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
 
 var xField = "STATE_NAME",
-  yField = "POP2000",
-  toolTipTitle = "{STATE_NAME}",
-  toolTipContent = "{POP2000}";
+yField = "POP2000",
+toolTipTitle = "{STATE_NAME}",
+toolTipContent = "{POP2000}";
 ```
 Of course there is no need to do this but I found it helpful to me.
 
