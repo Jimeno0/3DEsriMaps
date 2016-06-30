@@ -12,7 +12,7 @@ I learn how to do it form the [Esri Cedar tutorial](http://esri.github.io/cedar/
 
 ### Adding the libraries
 
-First we add the libraries
+First add the libraries
 
 ```html
 <script type="text/javascript" src="//esri.github.io/cedar/js/d3.min.js"></script>
@@ -21,16 +21,17 @@ First we add the libraries
 ```
 ### Chart
 
-We create the Cedar Chart by using `new Cedar`constructor.
-I define a couple of variables to be able to use the same graphics scaffold to many others services by just changing this variables. These veariables are:
+Create the Cedar Chart by using `new Cedar`constructor.
+I define a couple of variables to be able to use the same graphics scaffold to many others services by just changing these variables. These veariables are:
 
-* Service url: Feature/Map service url
-* Fields to display:
-	What field we want to display on each axe. In case we use Pie Graphics instead of use x field we will have a propertie Label 
-	* y field
-	* x field(Label in cedar Pie)
-* Fields to display at the tooltip:
-	tooltipTitle and tooltipContent.
+* **Service url** : Feature/Map service url
+* **Fields to display** :
+	What field we want to display on each axe
+	* `y` field
+	* `x` field(In case we use Pie Graphics instead of use `x` field we will have a propertie named `label`)
+* **Tooltip**:
+	* `tooltipTitle`
+	* `tooltipContent`
 
 ```js
 var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
