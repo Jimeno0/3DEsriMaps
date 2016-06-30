@@ -41,19 +41,19 @@
         "esri/widgets/Home",
         "dojo/domReady!"
       ], function(Map, SceneView,MapImageLayer,Query,PolygonSymbol3D,ExtrudeSymbol3DLayer,QueryTask,GraphicsLayer,SimpleFillSymbol,Home){
+        //defining 3D map and view
         map = new Map({
-          basemap: "oceans", //Additional basemap options are: satellite, hybrid, topo, gray, dark-gray, oceans, osm, national-geographic.
+          basemap: "oceans",
           ground: "world-elevation"
         });
         var view = new SceneView({
-          container: "viewDiv",     // Reference to the scene div created in step 5
-          map: map,                 // Reference to the map object created before the scene
-          //Setting the view point in the camera properties 
+          container: "viewDiv",
+          map: map,
           camera: {
           position: [
-                 -100, // lon
-                   20, // lat
-                5000000  // elevation in meters
+                 -100,
+                   20,
+                5000000
               ],
               tilt: 20,
               heading: 10
@@ -65,22 +65,70 @@
             }
           }
         });
+        //Home button
         var homeWidget = new Home({
           view: view
         });
-
-        // adds the home widget to the top left corner of the MapView
         view.ui.add(homeWidget, "top-left");
+        // setting popuptemplate for graphics layer
         var template = {
           title: "{STATE_NAME}",
           content: "Population: {POP2000}",
         };
+        //Creating the graphics layer & adding it to the map
         var graphicsLayer = new GraphicsLayer({popupTemplate: template});
         map.add(graphicsLayer);
         var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
-        applySimbologyWindow = applySimbology;
-        function applySimbology (highlighted){
+        applySymbologyWindow = applySymbology;
+        applySymbology();
+
+
+        //*******************
+        //*                 *
+        //*     CEDAR       *
+        //*                 *
+        //*******************
+
+        //Cedar graphics fields and popup params
+        var xField = "POP2000",
+          yField = "STATE_NAME",
+          toolTipTitle1 = "{POP2000}",
+          toolTipTitle2 = "{STATE_NAME}";
+
+        //Cedar chart:
+        var chart = new Cedar({
+          "type": "bar-horizontal",
+          "dataset": {
+            "url":usaStatesUrl,
+            "mappings":{
+              "x": {"field":xField,"label":"Population"},
+              "y": {"field":yField,"label":"States"},
+              "sort": xField + " DESC"  
+            }
+          },
+          "tooltip": {
+            "id": "tooltip-url",
+            "title": toolTipTitle2,
+            "content": "Population: " + toolTipTitle1 
+          }
+        });
+        //Showing chart
+        chart.show({
+          elementId: "#cedarDiv",
+          autolabels: true
+        });
+        //when we click on a graphic bar then trigger clickBar function
+        chart.on('click', clickBar);
+
+        //***********
+        //*Functions:
+        //***********
+
+        //function to apply the symbology
+        function applySymbology (highlighted){
+          //clear the graphics
           graphicsLayer.removeAll();
+          //query that returns all values
           var queryTask = new QueryTask({
             url: usaStatesUrl
           });
@@ -91,61 +139,37 @@
           query.where = "1=1";
           queryTask.execute(query).then(function(results){
             var features = results.features;
+            var symbol;
+
+            // Go through the array, if we found the selected state then highlight it and go to
             for (var i = 0; i < features.length; i++) {
             var size = (features[i].attributes.POP2000)/40;
-              if (features[i].attributes.STATE_NAME == highlighted) {
-                view.goTo(features[i].geometry)
-                  var symbol = new PolygonSymbol3D({
+              if (features[i].attributes.STATE_NAME === highlighted) {
+                view.goTo(features[i].geometry);
+                symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
                     size: size,
                     material: { color: "rgb(0, 182, 234)" }
                   })]
                 });
               }else {
-                var symbol = new PolygonSymbol3D({
+                symbol = new PolygonSymbol3D({
                   symbolLayers: [new ExtrudeSymbol3DLayer({
                     size: size,
                     material: { color: "blue" }
                   })]
                 });
-              };
+              }
               features[i].symbol = symbol;
               graphicsLayer.add(features[i]);
-            };
+            }
           });
-          queryTask.executeForCount(query).then(function(results){
-          });
-      };
-      applySimbology("null");
-      var xField = "POP2000",
-        yField = "STATE_NAME",
-        toolTipTitle1 = "{STATE_NAME}",
-        toolTipTitle2 = "{POP2000}";
-      var chart = new Cedar({
-        "type": "bar-horizontal",
-        "dataset": {
-          "url":usaStatesUrl,
-          "mappings":{
-            "x": {"field":xField,"label":"Population"},
-            "y": {"field":yField,"label":"States"},
-            "sort": xField + " DESC"  
-          }
-        },
-        "tooltip": {
-          "id": "tooltip-url",
-          "title": toolTipTitle2,
-          "content": "Population: " + toolTipTitle1 
         }
-      });
-        chart.show({
-          elementId: "#cedarDiv",
-          autolabels: true
-        });
+        //function that triggers when we click on a graphic bar
         function clickBar(event,data){
-        var selected = data[chart.dataset.mappings.y.field];
-        applySimbology(selected);
+          var selected = data[chart.dataset.mappings.y.field];
+          applySymbology(selected);
         }
-        chart.on('click', clickBar);
       });
       
       </script>
@@ -153,7 +177,8 @@
     <body>
       <div id="viewDiv"></div>
       <div id="cedarDiv">
-        <a href="#" onclick="applySimbologyWindow('null'); return false"> Reset simbology</a><span id="filter"> Click on bars to highlight selected in map</span>
+        <a href="#" onclick="applySymbologyWindow(); return false"> Reset simbology</a>
+        <span id="filter"> Click on bars to highlight selected in map</span>
       </div>
     </body>
   </html>
