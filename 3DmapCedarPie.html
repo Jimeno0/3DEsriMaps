@@ -66,6 +66,8 @@
             }
           }
         });
+        //service url:
+        var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
         //Home button
         var homeWidget = new Home({
           view: view
@@ -79,7 +81,7 @@
         //Creating the graphics layer & adding it to the map
         var graphicsLayer = new GraphicsLayer({popupTemplate: template});
         map.add(graphicsLayer);
-        var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
+
         applySymbologyWindow = applySymbology;
         applySymbology();
 
