@@ -87,7 +87,8 @@ chart.show({
 ```
 ### On click event
 
-By clicking on any bar/pie trigger the clickBar function (or any other function that we want to execute)
+By clicking on any bar/pie trigger the defined function:
+In this case I create a `clickBar`function that checks wich state is the selected then highlight and go to it
 
 ```js
 chart.on('click', clickBar);
