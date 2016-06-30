@@ -1,5 +1,4 @@
-# Examples using Esri Cedar Graphics and the new JS-API 4.0
-
+# Using Esri Cedar Graphics 
 ## About this example
 
 There are two examples of 3D maps where we can see the USA population represented by struded symbols. By clicking on any graphic bar/pie we can go to the selected state:
@@ -9,11 +8,11 @@ There are two examples of 3D maps where we can see the USA population represente
 
 ## How cedar works
 
-### First we define the chart:
+### Params first:
 
-* Params:
+Url service, what field to display on each axe and what field to renderize at the popups.
 
-Url service, what field to display on each axe and what field to renderize at the popups
+I find this specially helpfull because doing that we can use the same graphics scaffold to many others services by just changing the params
 ```js
 var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
 
@@ -23,7 +22,7 @@ var xField = "STATE_NAME",
   toolTipTitle2 = "{STATE_NAME}";
 ```
 
-* Chart:
+### Chart
 Then we create a new Cedar chart
 
 ```js
@@ -40,7 +39,7 @@ var chart = new Cedar({
   }
 });
 ```
-* Tooltip:
+### Tooltip
 
 Set the tooltip (popup)
 ```js
@@ -49,7 +48,7 @@ chart.tooltip = {
   "content": "Population: " + toolTipTitle1
 };
 ```
-* Show:
+### Show
 
 Set where we show the graphic
 
@@ -61,9 +60,9 @@ chart.show({
   autolabels: true
 });
 ```
-* On click event:
+### On click event
 
-By clicking on any bar/pie trigger the clickBar function
+By clicking on any bar/pie trigger the clickBar function (or any other function that we want to define)
 
 ```js
 chart.on('click', clickBar);
