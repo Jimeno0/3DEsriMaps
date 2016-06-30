@@ -22,7 +22,7 @@ First add the libraries
 ### Chart
 
 Create the Cedar Chart by using `new Cedar`constructor.
-I define a couple of variables to be able to use the same graphics scaffold to many others services by just changing these variables. These veariables are:
+I define a couple of variables to be able to use the same graphics scaffold to many others services by just changing these variables. These variables are:
 
 * **Service url** : Feature/Map service url
 * **Fields to display** :
@@ -43,7 +43,7 @@ toolTipContent = "{POP2000}";
 ```
 Of course there is no need to do this but I found it helpful to me.
 
-Then I create a new Cedar chart wich has the following properties:
+Then I create a **new Cedar** chart wich has the following properties:
 
 * `type`: Type of graphic, in this case I use Pie Graphics but there are many  other types that you can see in the [Esri Cedar tutorial](http://esri.github.io/cedar/tutorial/)
 
