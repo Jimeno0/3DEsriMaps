@@ -8,7 +8,7 @@ There are two examples of 3D maps where we can see the USA population represente
 
 ## How cedar works
 
-### Params first:
+### Params first
 
 Url service, what field to display on each axe and what field to renderize at the popups.
 
