@@ -6,24 +6,47 @@ There are two examples of 3D maps where we can see the USA population represente
 * [Using horizontal bars graphics](http://jimeno0.github.io/3DEsriMaps/3DmapCedarBars.html)
 * [Using pie chart graphics](http://jimeno0.github.io/3DEsriMaps/3DmapCedarPie.html).
 
-## How cedar works
+## How this Cedar example works
 
-### Params first
+I learn how to do it form the [Esri Cedar tutorial](http://esri.github.io/cedar/tutorial/). There are many simple exameples if you want to learn how to start with cedar.
 
-Url service, what field to display on each axe and what field to renderize at the popups.
+### CDNs
 
-I find this specially helpfull because doing that we can use the same graphics scaffold to many others services by just changing the params
+Fist we add the CDNs
+
+```html
+<script type="text/javascript" src="//esri.github.io/cedar/js/d3.min.js"></script>
+<script type="text/javascript" src="//esri.github.io/cedar/js/vega.js"></script>
+<script type="text/javascript" src="//esri.github.io/cedar/js/cedar.js"></script>
+```
+### Chart
+
+We create the Cedar Chart by using `new Cedar`constructor.
+I define a couple of variables because of we can use the same graphics scaffold to many others services by just changing this variables. These veariables are:
+
+* Service url: Feature/Map service url 
+* Fields to display:
+	What field we want to display on each axe. In case we use Pie Graphics instead of use x field we will have a propertie Label 
+	* y field
+	* x field(Label in cedar Pie)
+* Fields to display at the tooltip:
+	tooltipTitle and tooltipContent.
+
 ```js
 var usaStatesUrl = 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3';
 
 var xField = "STATE_NAME",
   yField = "POP2000",
-  toolTipTitle1 = "{POP2000}",
-  toolTipTitle2 = "{STATE_NAME}";
+  toolTipTitle = "{STATE_NAME}",
+  toolTipContent = "{POP2000}";
 ```
+Of course there is no need to do this but I found it helpful to me.
 
-### Chart
-Then we create a new Cedar chart
+Then I create a new Cedar chart wich has the following properties:
+
+* `type`: Type of graphic, in this case I use Pie Graphics but there are many  other types that you can see in the [Esri Cedar tutorial](http://esri.github.io/cedar/tutorial/)
+
+* `dataset`: Where we define the service `url` and the `mappings` settings. Here is where we set wich service fields to display in the Graphic, how we want to `sort` the results, the Pie `radius` and others
 
 ```js
 var chart = new Cedar({
@@ -31,26 +54,27 @@ var chart = new Cedar({
   "dataset": {
     "url":usaStatesUrl,
     "mappings":{
-    "label": {"field":xField,"label":"States"},
-    "y": {"field":yField,"label":"Population"},
-     "sort": yField,
-    "radius": 270
+      "label": {"field":xField,"label":"States"},
+      "y": {"field":yField,"label":"Population"},
+      "sort": yField,
+      "radius": 270
     }
   }
 });
 ```
 ### Tooltip
 
-Set the tooltip (popup)
+Here I set the tooltip title and content template
+
 ```js
 chart.tooltip = {
-  "title": toolTipTitle2,
-  "content": "Population: " + toolTipTitle1
+  "title": toolTipTitle,
+  "content": "Population: " + toolTipContent
 };
 ```
 ### Show
 
-Set where we show the graphic
+Set where we show the graphic, `width` and `height`
 
 ```js
 chart.show({
@@ -62,7 +86,7 @@ chart.show({
 ```
 ### On click event
 
-By clicking on any bar/pie trigger the clickBar function (or any other function that we want to define)
+By clicking on any bar/pie trigger the clickBar function (or any other function that we want to execute)
 
 ```js
 chart.on('click', clickBar);
